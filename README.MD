@@ -38,3 +38,9 @@ CLOUDINARY_URL=*MyCloudinaryPersonalURL*
 CONNECTION_STRING_MONGODB=*MyMongoDBPersonalConnectionString*
 OPENAI_API_KEY=*MyPersonalChatGptKey*
 ```
+
+To add the data to the DB for tests:
+Copy your connection string from your .env file
+```
+mongoimport "*Your connection string*" --collection chapters --file data/chapterData.json --type json --jsonArray
+```
