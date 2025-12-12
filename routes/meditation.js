@@ -42,7 +42,7 @@ router.post("/player", async (req, res) => {
 
     // Vérifier que toutes les données sont là
     if (!checkBody(req.body, ["theme", "mode", "duration"])) {
-      return res.json({ result: false, error: "Missing or empty fields" });
+      return res.status(400).json({ result: false, error: "Missing or empty fields" });
     }
 
     // Identifier la bonne méditation
