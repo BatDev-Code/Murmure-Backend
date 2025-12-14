@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
 const Chapter = require('../models/chapters');
+const User = require('../models/users');
 require('dotenv').config();
 
 // Lire le fichier JSON
