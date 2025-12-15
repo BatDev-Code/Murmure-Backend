@@ -6,7 +6,12 @@ require('dotenv').config();
 
 // Lire le fichier JSON
 const chapterData = JSON.parse(fs.readFileSync('data/chapters.json', 'utf-8'));
-const userData = JSON.parse(fs.readFileSync('data/users.json', 'utf-8'));
+// Lire le fichier json + extraire L'OID en String et convertir la date en Objet Date (En utilisant l'Optional Chaining)
+const userData = JSON.parse(fs.readFileSync('data/users.json', 'utf-8')).map((user) => ({
+  ...user,
+  _id: user._id?.$oid || undefined,
+  creationDate: user.creationDate?.$date ? new Date(user.creationDate.$date) : undefined,
+}));
 
 const importData = async () => {
   try {
@@ -15,6 +20,7 @@ const importData = async () => {
 
     // Optionnel : Vider la collection avant
     await Chapter.deleteMany();
+    await User.deleteMany();
     console.log('🗑️ Données précédentes effacées');
 
     // Créer les données (Mongoose validera chaque entrée ici)

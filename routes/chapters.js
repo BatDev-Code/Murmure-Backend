@@ -1,21 +1,21 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
 
-require("../models/connection");
-const Chapter = require("../models/chapters");
+require('../models/connection');
+const Chapter = require('../models/chapters');
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   const chapters = await Chapter.find().sort({ index: 1 });
   res.json({ result: true, chapters });
 });
 
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const chapters = await Chapter.findOne({ index: req.params.id });
-    if (!chapters) return res.status(404).json({ result: false, message: "Not found" });
+    if (!chapters) return res.status(404).json({ result: false, message: 'Not found' });
     res.json({ result: true, chapters });
   } catch (err) {
-    res.status(400).json({ result: false, message: "Invalid ID" });
+    res.status(400).json({ result: false, message: 'Invalid ID' });
   }
 });
 
