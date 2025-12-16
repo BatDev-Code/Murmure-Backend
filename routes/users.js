@@ -89,4 +89,27 @@ router.delete('/deleteUser', (req, res) => {
   });
 });
 
+router.put('/progress', (req, res) => {
+  if (!checkBody(req.body, ['progressNb', 'token'])) {
+    res.json({ result: false, error: 'Missing or empty fields' });
+    return;
+  }
+
+  const token = req.body.token;
+
+  User.findOne({ token: token }).then((data) => {
+    if (data) {
+      if (req.body.progressNb > data.progressNb) {
+        User.updateOne({ token: token }, { progressNb: req.body.progressNb }).then(() => {
+          res.json({ result: true, progressNb: req.body.progressNb });
+        });
+      } else {
+        res.json({ result: false, error: 'ProgressNb can not be decreased', currentProgress: data.progressNb });
+      }
+    } else {
+      res.json({ result: false, error: 'User not found' });
+    }
+  });
+});
+
 module.exports = router;
