@@ -18,9 +18,7 @@ server.listen(PORT, () => {
 });
 
 // CREATION IA COTE SERVEUR --------------------------------
-
 // On crée le client IA côté serveur:
-
 // POUR L'EQUIPE : Besoin d'ajouter à .env: HF_TOKEN=token
 // Ce token s'obtient après création d'un compte sur HuggingFace, settings / AccessTokens (bien la noter, visible qu'une seule fois)
 
@@ -94,21 +92,16 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  console.log('Client connecté', socket.id);
-
   // Récup token et username
   const token = socket.handshake.auth?.token;
   const username = socket.handshake.auth?.username || '';
-  console.log('token reçu back', token);
-  console.log('username reçu back', username);
-
   let conversation;
 
   // Si token existe
   if (token) {
     if (!conversationsByToken[token]) {
       // Message d'accueil personnalisé
-      console.log('username:', username);
+
       const welcomeMessage = username
         ? `Bonjour ${username}, comment te sens-tu aujourd'hui?`
         : `Bonjour, comment te sens-tu aujourd'hui?`;
@@ -118,10 +111,9 @@ io.on('connection', (socket) => {
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'assistant', content: welcomeMessage },
       ];
-
-      console.log('nouvelle conversation crée pour token:', token);
+      // console.log('nouvelle conversation crée pour token:', token);
     } else {
-      console.log('conversation existante récupérée pour token:', token);
+      // console.log('conversation existante récupérée pour token:', token);
     }
     // Récup conversation existante
     conversation = conversationsByToken[token];
@@ -131,7 +123,6 @@ io.on('connection', (socket) => {
       { role: 'system', content: SYSTEM_PROMPT },
       { role: 'assistant', content: "Bonjour, comment te sens-tu aujourd'hui?" },
     ];
-    console.log('conversation temporaire sans token');
   }
   // Envoi de l'historique
   socket.emit('chat-history', conversation);
@@ -139,14 +130,9 @@ io.on('connection', (socket) => {
   // Quand le front envoie un message utilisateur :
   // socket.on: écoute de ce qui est émis par le front
   socket.on('user-message', async (msg) => {
-    console.log('Message reçu du front:', msg);
-
     conversation.push({ role: 'user', content: msg });
-
     const aiReply = await callAIWithHistory(conversation); //appel de l'ia + stock de sa réponse dans aiReply
-
     conversation.push({ role: 'assistant', content: aiReply }); //on l'ajoute à l'historique
-
     socket.emit('ai-message', aiReply); //envoie la réponse à CE client (socket, sinon c'est io.emit)
   });
 
