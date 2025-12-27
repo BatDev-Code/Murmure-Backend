@@ -15,7 +15,13 @@ var meditationRouter = require('./routes/meditation');
 var app = express();
 
 const cors = require("cors");
-app.use(cors());
+// Configuration CORS explicite pour autoriser les requêtes du frontend déployé
+app.use(cors({
+  origin: '*', // Autorise toutes les origines
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
